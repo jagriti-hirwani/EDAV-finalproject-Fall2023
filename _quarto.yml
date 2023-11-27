@@ -6,11 +6,11 @@ execute:
   echo: true
 
 book:
-  title: "YOUR PROJECT TITLE"
+  title: "NONIMMIGRANT VISA ISSUANCE ANALYSIS"
   author:
-    - AUTHOR1 (UNI1)
-    - AUTHOR2 (UNI2)
-  repo-url: https://github.com/YOUR_GITHUB_ACCOUNT/REPO_NAME
+    - RAJAT GUPTA (rg3552)
+    - JAGRITI HIRWANI (jh4771)
+  repo-url: https://github.com/jagriti-hirwani/EDAV-finalproject-Fall2023
   date: today
   page-footer:
     right: |
