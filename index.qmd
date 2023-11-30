@@ -4,21 +4,21 @@ Layoffs can have significant and widespread effects on individuals, communities,
 
 Key questions we aim to address include:
 
-1) Industry Resilience:
+1) Industry Resilience
   - Which industries or sectors are experiencing the highest levels of layoffs? Which industries are more affected by layoffs and which ones are more robust to the economic conditions?
-2) Geographic Dynamics:
+2) Geographic Dynamics
   - How do layoff rates vary across different geographic regions? 
   - Can we discern disparities in layoff rates between urban and rural areas?
-3) Economic and Market Correlation:
+3) Economic and Market Correlation
   - How do layoff rates correlate with market and economic indicators? 
   - Is the unemployment rate also consistent with the observed layoff data?
-4) Temporal Trends: 
+4) Temporal Trends
   - What is the historical trend of layoffs across different years?
   - Are there discernible patterns or cycles in layoff data, and how closely do these align with broader market trends and       stock market data?
-5) Notice period: 
+5) Notice period 
   - What is the typical notice period provided to employees facing layoffs? 
   - Are employees awarded sufficient time to explore alternative opportunities, and how can this impact their transition?
-6) Reason for Layoffs:
+6) Reason for Layoffs
   - What was the major reason for layoffs? Which reasons were more common than the others?
   
 By addressing these questions, our analysis seeks to provide a comprehensive understanding of the layoff landscape, offering insights that can inform proactive career choices, strategic business decisions, and effective policy interventions. This knowledge is crucial for navigating the complexities of a dynamic job market and fostering resilience in the face of economic changes.
