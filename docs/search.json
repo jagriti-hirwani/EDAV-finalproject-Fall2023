@@ -4,20 +4,27 @@
     "href": "index.html",
     "title": "NONIMMIGRANT VISA ISSUANCE ANALYSIS",
     "section": "",
-    "text": "1 Introduction"
+    "text": "1 Introduction\nLayoffs can have significant and widespread effects on individuals, communities, and the economy as a whole. This is particularly pertinent for current students who are navigating the job market and assessing future career prospects. Our goal is to unveil the nuanced reality behind layoffs, posing essential questions to empower individuals in their career planning, assist businesses in shaping effective strategies, and guide policymakers in addressing challenges tied to workforce transitions and economic uncertainties.\nKey questions we aim to address include: 1) Industry Resilience: - Which industries or sectors are experiencing the highest levels of layoffs? Which industries are more affected by layoffs and which ones are more robust to the economic conditions? 2) Geographic Dynamics: - How do layoff rates vary across different geographic regions? - Can we discern disparities in layoff rates between urban and rural areas? 3) Economic and Market Correlation: - How do layoff rates correlate with market and economic indicators? - Is the unemployment rate also consistent with the observed layoff data? 4) Temporal Trends: - What is the historical trend of layoffs across different years? - Are there discernible patterns or cycles in layoff data, and how closely do these align with broader market trends and stock market data? 5) Notice period: - What is the typical notice period provided to employees facing layoffs? - Are employees awarded sufficient time to explore alternative opportunities, and how can this impact their transition? 6) Reason for Layoffs: - What was the major reason for layoffs? Which reasons were more common than the others?\nBy addressing these questions, our analysis seeks to provide a comprehensive understanding of the layoff landscape, offering insights that can inform proactive career choices, strategic business decisions, and effective policy interventions. This knowledge is crucial for navigating the complexities of a dynamic job market and fostering resilience in the face of economic changes."
   },
   {
-    "objectID": "data.html#description",
-    "href": "data.html#description",
+    "objectID": "data.html#technical-description",
+    "href": "data.html#technical-description",
     "title": "2  Data",
-    "section": "2.1 Description",
-    "text": "2.1 Description"
+    "section": "2.1 Technical Description",
+    "text": "2.1 Technical Description\nThe datasets we are using for our project are as follows:\n\nLayoff Data: https://layoffdata.com/data/\n\n\nCollected by: Rajat Gupta\nDownloaded from a spreadsheet\nFormat of the data: excel spreadsheet with the following features:\n\nState\nCompany\nCity\nNumber of Workers laid off\nReceived Date - date when the notice was received\nEffective Date - date of leaving\nLayoff/Closure Type - reason for layoff\nUnion - union to which workers belonged to if any\nRegion\nCounty\nIndustry - type of industry that the company belongs\nNotes - further information on the reason for layoff\nFrequency of updates: Monthly\n\nDimensions of the data: The data consists of 50218 rows and 13 columns.\nIssues/problems with the data: There are two columns in the data namely: ‘Layoff/ClosureType’ and ‘Temporary/Permanent’ which have coinciding values of the reason for layoff. We will pick one which is more explanatory of the layoff cause.\n\n\nUnemployment Rate Data: https://fred.stlouisfed.org/series/UNRATE\n\n\nCollected by: Jagriti Hirwani\nDownload as an excel file available on the website\nFormat of the data : .xls file with the following features\n\nObservation date: date on which the unemployment rate was taken\nRate of unemployment\n\nFrequency of update: Monthly\nDimensions of the data: the data has 910 rows and 2 columns\nOther relevant information: the data consists monthly employment rate from January 1984 - October 2023\nIssues/problems with the data: there is no problem with the data, we will trim the data to accommodate recent years as we do not need unemployment rates as old as 1984.\n\n\nStock market data: https://www.wsj.com/market-data/quotes/index/SPX/historical-prices\n\n\nCollected by Jagriti Hirwani\nDownloaded as a csv file\nFormat of the data: .csv file with the following features:\n\nDate\nOpen - opening prices for the day\nHigh - highest price of the day\nLow - lowest price of the day\n\nClose - closing prices for the day\nFrequency of the data: Daily\nDimensions of the data: The data has 4089 rows and 5 columns\nOther relevant information: The data ranges from September 2007 to November 2023\n\nPlan to import the data: We have downloaded the data from the sources mentioned above and will be using it in our R workspace for further analysis."
+  },
+  {
+    "objectID": "data.html#research-plan",
+    "href": "data.html#research-plan",
+    "title": "2  Data",
+    "section": "2.2 Research Plan",
+    "text": "2.2 Research Plan"
   },
   {
     "objectID": "data.html#missing-value-analysis",
     "href": "data.html#missing-value-analysis",
     "title": "2  Data",
-    "section": "2.2 Missing value analysis",
-    "text": "2.2 Missing value analysis"
+    "section": "2.3 Missing value analysis",
+    "text": "2.3 Missing value analysis"
   }
 ]

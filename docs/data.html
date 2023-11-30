@@ -142,8 +142,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description"><span class="header-section-number">2.1</span> Description</a></li>
-  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</a></li>
+  <li><a href="#technical-description" id="toc-technical-description" class="nav-link active" data-scroll-target="#technical-description"><span class="header-section-number">2.1</span> Technical Description</a></li>
+  <li><a href="#research-plan" id="toc-research-plan" class="nav-link" data-scroll-target="#research-plan"><span class="header-section-number">2.2</span> Research Plan</a></li>
+  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</a></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jagriti-hirwani/EDAV-finalproject-Fall2023/edit/main/data.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jagriti-hirwani/EDAV-finalproject-Fall2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -167,11 +168,75 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="description" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="description"><span class="header-section-number">2.1</span> Description</h2>
+<section id="technical-description" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="technical-description"><span class="header-section-number">2.1</span> Technical Description</h2>
+<p>The datasets we are using for our project are as follows:</p>
+<ol type="1">
+<li>Layoff Data: https://layoffdata.com/data/</li>
+</ol>
+<ul>
+<li>Collected by: Rajat Gupta</li>
+<li>Downloaded from a spreadsheet</li>
+<li>Format of the data: excel spreadsheet with the following features:
+<ul>
+<li>State</li>
+<li>Company</li>
+<li>City</li>
+<li>Number of Workers laid off</li>
+<li>Received Date - date when the notice was received</li>
+<li>Effective Date - date of leaving</li>
+<li>Layoff/Closure Type - reason for layoff</li>
+<li>Union - union to which workers belonged to if any</li>
+<li>Region</li>
+<li>County</li>
+<li>Industry - type of industry that the company belongs</li>
+<li>Notes - further information on the reason for layoff</li>
+<li>Frequency of updates: Monthly</li>
+</ul></li>
+<li>Dimensions of the data: The data consists of 50218 rows and 13 columns.</li>
+<li>Issues/problems with the data: There are two columns in the data namely: ‘Layoff/ClosureType’ and ‘Temporary/Permanent’ which have coinciding values of the reason for layoff. We will pick one which is more explanatory of the layoff cause.</li>
+</ul>
+<ol start="2" type="1">
+<li>Unemployment Rate Data: https://fred.stlouisfed.org/series/UNRATE</li>
+</ol>
+<ul>
+<li>Collected by: Jagriti Hirwani</li>
+<li>Download as an excel file available on the website</li>
+<li>Format of the data : .xls file with the following features
+<ul>
+<li>Observation date: date on which the unemployment rate was taken</li>
+<li>Rate of unemployment</li>
+</ul></li>
+<li>Frequency of update: Monthly</li>
+<li>Dimensions of the data: the data has 910 rows and 2 columns</li>
+<li>Other relevant information: the data consists monthly employment rate from January 1984 - October 2023</li>
+<li>Issues/problems with the data: there is no problem with the data, we will trim the data to accommodate recent years as we do not need unemployment rates as old as 1984.</li>
+</ul>
+<ol start="3" type="1">
+<li>Stock market data: https://www.wsj.com/market-data/quotes/index/SPX/historical-prices</li>
+</ol>
+<ul>
+<li>Collected by Jagriti Hirwani</li>
+<li>Downloaded as a csv file</li>
+<li>Format of the data: .csv file with the following features:
+<ul>
+<li>Date</li>
+<li>Open - opening prices for the day</li>
+<li>High - highest price of the day</li>
+<li>Low - lowest price of the day</li>
+</ul></li>
+<li>Close - closing prices for the day</li>
+<li>Frequency of the data: Daily</li>
+<li>Dimensions of the data: The data has 4089 rows and 5 columns</li>
+<li>Other relevant information: The data ranges from September 2007 to November 2023</li>
+</ul>
+<p>Plan to import the data: We have downloaded the data from the sources mentioned above and will be using it in our R workspace for further analysis.</p>
 </section>
-<section id="missing-value-analysis" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.2</span> Missing value analysis</h2>
+<section id="research-plan" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="research-plan"><span class="header-section-number">2.2</span> Research Plan</h2>
+</section>
+<section id="missing-value-analysis" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</h2>
 
 
 </section>
