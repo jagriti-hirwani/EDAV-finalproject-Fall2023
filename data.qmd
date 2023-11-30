@@ -5,7 +5,7 @@
 The datasets we are using for our project are as follows:
 
 1) Layoff Data: https://layoffdata.com/data/
-  - Collected by: Rajat Gupta
+  - Collected by: WARN Database which have citations from various sources mentioned here: https://layoffdata.com/cited/
   - Downloaded from a spreadsheet
   - Format of the data: excel spreadsheet with the following features:
     - State 
@@ -26,7 +26,7 @@ The datasets we are using for our project are as follows:
     There are two columns in the data namely: ‘Layoff/Closure\n Type' and 'Temporary/Permanent' which have coinciding values     of the reason for layoff. We will pick one which is more explanatory of the layoff cause.
     
 2) Unemployment Rate Data: https://fred.stlouisfed.org/series/UNRATE
-  - Collected by: Jagriti Hirwani
+  - Collected by Federal Reserve Economic Data from the U.S. Bureau of Labor Statistics
   - Download as an excel file available on the website
   - Format of the data : .xls file with the following features
     - Observation date: date on which the unemployment rate was taken
@@ -37,7 +37,7 @@ The datasets we are using for our project are as follows:
   - Issues/problems with the data: there is no problem with the data, we will trim the data to accommodate recent years as we     do not need unemployment rates as old as 1984.
   
 3) Stock market data: https://www.wsj.com/market-data/quotes/index/SPX/historical-prices
-  - Collected by Jagriti Hirwani
+  - Collected by the Wall Street Journal
   - Downloaded as a csv file 
   - Format of the data: .csv file with the following features:
     - Date 
