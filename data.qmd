@@ -69,3 +69,224 @@ Examining the causative factors behind current layoffs available in data, we wil
 Finally, our analysis will integrate unemployment rate data to understand the post-layoff trajectories of affected individuals. This examination seeks to ascertain whether individuals subjected to current layoffs will transition swiftly into alternative employment or contribute to an uptick in current unemployment rates by remaining unemployed.
 
 ## Missing value analysis
+
+We will now investigate our data to check for any missing values.
+
+```{r}
+library(dplyr)
+library(tibble)
+library(tidyr)
+library(ggplot2)
+library(forcats)
+library(readxl)
+```
+
+```{r}
+data <- read_excel("./data/WARN Database 10-31-2023 [TO EDIT_ FILE-_MAKE A COPY].xlsx")
+
+head(data, 5)
+```
+
+Let's check for the distribution of missing values across columns in our data.
+```{r}
+# Calculate the number of missing values in each column
+missing_values <- sapply(data, function(x) sum(is.na(x)))
+
+# Calculate the total number of records in the dataset
+total_records <- nrow(data)
+
+# Create a data frame for plotting
+missing_data_df <- data.frame(Column = names(missing_values), Missing_Values = missing_values)
+
+# Create a bar chart using ggplot2 with text labels on top and total records
+ggplot(missing_data_df, aes(x = Column, y = Missing_Values)) +
+    geom_bar(stat = "identity", fill = "skyblue", color = "black") +
+    geom_text(aes(label = Missing_Values), vjust = -0.5, color = "black") +
+    geom_text(aes(x = 0, y = total_records + 5, label = paste("Total Records:", total_records)),
+        hjust = 0, vjust = 0, color = "black"
+    ) +
+    labs(
+        title = "Number of Missing Values in Each Column",
+        x = "Column",
+        y = "Number of Missing Values"
+    ) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+We can make the following observations:
+- We have Company and State information for all records.
+- 'Union' and 'Temporary/Permanent' information is missing for almost all records, so we cannot include them in our analysis.
+- We have around 612 records with no information of the 'Number of Workers' laid off, so these records cannot contribute to our analysis.
+- Columns like 'Notes', and 'Region' have high fraction of missing values but they don't play a major role in our analysis. 
+- The high fraction of missing values in 'Industry' coulmn, however, could limit our industry wise analysis. Since the critical parts of our analysis will depend on the last 5 years, we can check the missing ratio in that time interval to check if it's any better.
+
+```{r}
+data$`Received Date` <- as.POSIXct(data$`Received Date`, format = "%Y-%m-%d %Z")
+
+# Filter for values after 2018
+filtered_data <- data %>%
+    filter(`Received Date` > as.POSIXct("2018-01-01"))
+
+
+# Calculate the number of missing values in each column
+missing_values <- sapply(filtered_data, function(x) sum(is.na(x)))
+
+# Calculate the total number of records in the dataset
+total_records <- nrow(filtered_data)
+
+# Create a data frame for plotting
+missing_data_df <- data.frame(Column = names(missing_values), Missing_Values = missing_values)
+
+# Create a bar chart using ggplot2 with text labels on top and total records
+ggplot(missing_data_df, aes(x = Column, y = Missing_Values)) +
+    geom_bar(stat = "identity", fill = "skyblue", color = "black") +
+    geom_text(aes(label = Missing_Values), vjust = -0.5, color = "black") +
+    geom_text(aes(x = 0, y = total_records + 5, label = paste("Total Records:", total_records)),
+        hjust = 0, vjust = 0, color = "black"
+    ) +
+    labs(
+        title = "Number of Missing Values in Each Column (2018-2023)",
+        x = "Column",
+        y = "Number of Missing Values"
+    ) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+We do not see any good signs in this time interval since the fraction of missing values in the 'Industry' column is still high. Although, we see that we don't have any missing values in the 'Number of Workers' laid off.
+
+Now, switching back to our original dataset, let's drop the 'Union', 'Temporary/Permanent', 'Notes', 'Region' columns before we deep dive into our missing values analyis as they might shadow the otherwise interesting patterns. We will also drop records with missing values in the 'Number of Workers' laid off.
+
+```{r}
+# Clean the data
+data <- data |>
+    select(-"Union", -"Temporary/Permanent", -"Notes", -"Region")
+
+data <- data[!is.na(data[, "Number of Workers"]), ]
+head(data)
+```
+
+Now, to identify patterns in missing values, we added a new feature to the redav package to address the chalenges of large datasets. We added the parameter 'threshold'. This controls the percentage of records covered by patterns to be displayed in the graph. For example, if we want to just display patterns which cover 90% of our data, we can pass a value of 0.9.
+
+```{r}
+plot_missing <- function(x, percent = TRUE, threshold = 1) {
+    na_count_all <- data.frame(is.na(x)) %>%
+        dplyr::group_by_all() %>%
+        dplyr::count(name = "count", sort = TRUE) %>%
+        dplyr::ungroup() %>%
+        tibble::rownames_to_column("pattern")
+
+    na_count_all <- na_count_all %>%
+        dplyr::mutate(pattern = factor(.data$pattern, levels = nrow(na_count_all):1))
+
+    # count the number of columns with missing values; will be used later to determine if there's a "none missing" pattern
+    na_count_all <- na_count_all %>%
+        dplyr::rowwise() %>%
+        dplyr::mutate(num_missing_cols = sum(dplyr::c_across(where(is.logical))))
+
+    # filter out based on threshold : NEWLY ADDED
+    na_count_all <- na_count_all %>%
+        arrange(desc(count)) %>%
+        mutate(perc_pattern_cov = count / sum(na_count_all$count, na.rm = TRUE))
+    na_count_all$cum_perc_pattern <- cumsum(na_count_all$perc_pattern_cov)
+    na_count_all <- na_count_all |>
+        filter(cum_perc_pattern <= threshold) |>
+        select(-cum_perc_pattern, -perc_pattern_cov)
+
+    # data frame for missing patterns bar chart
+    na_count_by_pattern <- na_count_all[, c("pattern", "count", "num_missing_cols")]
+    na_count_by_pattern$none_missing <- ifelse(na_count_by_pattern$num_missing_cols == 0, TRUE, FALSE)
+
+    # data frame for missing by column bar chart
+    na_count_by_column <- data.frame(is.na(x)) %>%
+        colSums() %>%
+        sort(decreasing = TRUE) %>%
+        tibble::enframe(name = "var", value = "count")
+
+    # tidy and sort na_count_all by column counts
+    na_count_all_tidy <- na_count_all %>%
+        tidyr::pivot_longer(where(is.logical), names_to = "variable") %>%
+        dplyr::mutate(variable = factor(.data$variable, levels = na_count_by_column$var)) %>%
+        dplyr::mutate(none_missing = ifelse(.data$num_missing_cols == 0, TRUE, FALSE))
+
+    # main plot
+    main_plot <- ggplot2::ggplot(na_count_all_tidy, ggplot2::aes(.data$variable, .data$pattern, fill = factor(.data$value), alpha = .data$none_missing)) +
+        ggplot2::geom_tile(color = "white") +
+        ggplot2::scale_fill_manual(values = c("grey70", "mediumpurple")) +
+        ggplot2::scale_alpha_manual(values = c(.7, 1)) +
+        ggplot2::ylab("missing pattern") +
+        ggplot2::guides(fill = "none", alpha = "none") +
+        ggplot2::theme_classic(12)
+
+    # check for "none missing" pattern
+    none_missing_pattern <- na_count_by_pattern %>%
+        dplyr::filter(.data$none_missing) %>%
+        dplyr::pull(.data$pattern)
+
+    if (length(none_missing_pattern) > 0) {
+        main_plot <- main_plot +
+            ggplot2::annotate("text",
+                x = (ncol(na_count_all) - 2) / 2,
+                y = nrow(na_count_all) + 1 - as.numeric(as.character(none_missing_pattern)),
+                label = "complete cases"
+            )
+    }
+
+    # margin plots
+
+    denom <- ifelse(percent, nrow(x) / 100, 1)
+
+    missing_by_column_plot <- ggplot2::ggplot(na_count_by_column, ggplot2::aes(forcats::fct_inorder(.data$var), .data$count / denom)) +
+        ggplot2::geom_col(fill = "cornflowerblue", alpha = .7) +
+        ggplot2::scale_y_continuous(expand = c(0, 0), n.breaks = 3) +
+        ggplot2::xlab("") +
+        ggplot2::ylab(ifelse(percent, "% rows \n missing:", "num rows \n missing:")) +
+        ggplot2::theme_linedraw(12) +
+        ggplot2::theme(
+            panel.grid.major.x = ggplot2::element_blank(),
+            panel.grid.minor.x = ggplot2::element_blank()
+        )
+
+    missing_by_pattern_plot <-
+        ggplot2::ggplot(na_count_by_pattern, ggplot2::aes(.data$pattern, .data$count / denom, alpha = .data$none_missing)) +
+        ggplot2::geom_col(fill = "cornflowerblue") +
+        ggplot2::coord_flip() +
+        ggplot2::scale_y_continuous(expand = c(0, 0), n.breaks = 3) +
+        ggplot2::scale_alpha_manual(values = c(.7, 1)) +
+        ggplot2::xlab("") +
+        ggplot2::ylab(ifelse(percent, "% rows", "row count")) +
+        ggplot2::guides(alpha = "none") +
+        ggplot2::theme_linedraw(12) +
+        ggplot2::theme(
+            panel.grid.major.y = ggplot2::element_blank(),
+            panel.grid.minor.y = ggplot2::element_blank()
+        )
+
+    if (percent) {
+        missing_by_column_plot <- missing_by_column_plot +
+            ggplot2::scale_y_continuous(
+                expand = c(0, 0), n.breaks = 5,
+                limits = c(0, 100)
+            )
+        missing_by_pattern_plot <- missing_by_pattern_plot +
+            ggplot2::scale_y_continuous(
+                expand = c(0, 0), n.breaks = 5,
+                limits = c(0, 100)
+            )
+    }
+
+    missing_by_column_plot + patchwork::plot_spacer() +
+        main_plot + missing_by_pattern_plot +
+        patchwork::plot_layout(widths = c(4, 1), heights = c(1, 4))
+}
+```
+
+```{r}
+plot_missing(data, threshold = 0.99, percent = FALSE)
+```
+
+We can make the following observations:
+
+- As expected, 'Industry' column accounts for most missing values but in most cases it is the only column absent.
+- 'Complete Cases' form the second most observed pattern which is a good sign.
+
+
