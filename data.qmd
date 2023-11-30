@@ -1,5 +1,57 @@
 # Data
 
-## Description
+## Technical Description
+
+The datasets we are using for our project are as follows:
+
+1) Layoff Data: https://layoffdata.com/data/
+  - Collected by: Rajat Gupta
+  - Downloaded from a spreadsheet
+  - Format of the data: excel spreadsheet with the following features:
+    - State 
+    - Company
+    - City 
+    - Number of Workers laid off
+    - Received Date - date when the notice was received
+    - Effective Date - date of leaving
+    - Layoff/Closure Type - reason for layoff
+    - Union - union to which workers belonged to if any
+    - Region 
+    - County
+    - Industry - type of industry that the company belongs
+    - Notes - further information on the reason for layoff
+    - Frequency of updates: Monthly
+  - Dimensions of the data: The data consists of 50218 rows and 13 columns.
+  - Issues/problems with the data:
+    There are two columns in the data namely: ‘Layoff/Closure\n Type' and 'Temporary/Permanent' which have coinciding values     of the reason for layoff. We will pick one which is more explanatory of the layoff cause.
+    
+2) Unemployment Rate Data: https://fred.stlouisfed.org/series/UNRATE
+  - Collected by: Jagriti Hirwani
+  - Download as an excel file available on the website
+  - Format of the data : .xls file with the following features
+    - Observation date: date on which the unemployment rate was taken
+    - Rate of unemployment
+  - Frequency of update: Monthly
+  - Dimensions of the data: the data has 910 rows and 2 columns
+  - Other relevant information: the data consists monthly employment rate from January 1984 - October 2023
+  - Issues/problems with the data: there is no problem with the data, we will trim the data to accommodate recent years as we     do not need unemployment rates as old as 1984.
+  
+3) Stock market data: https://www.wsj.com/market-data/quotes/index/SPX/historical-prices
+  - Collected by Jagriti Hirwani
+  - Downloaded as a csv file 
+  - Format of the data: .csv file with the following features:
+    - Date 
+    - Open - opening prices for the day
+    - High - highest price of the day
+    - Low - lowest price of the day
+  - Close - closing prices for the day
+  - Frequency of the data: Daily
+  - Dimensions of the data: The data has 4089 rows and 5 columns
+  - Other relevant information: The data ranges from September 2007 to November 2023
+  
+Plan to import the data: We have downloaded the data from the sources mentioned above and will be using it in our R workspace for further analysis.
+
+
+## Research Plan
 
 ## Missing value analysis
