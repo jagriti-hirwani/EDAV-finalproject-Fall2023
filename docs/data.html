@@ -178,7 +178,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#technical-description" id="toc-technical-description" class="nav-link active" data-scroll-target="#technical-description"><span class="header-section-number">2.1</span> Technical Description</a></li>
   <li><a href="#research-plan" id="toc-research-plan" class="nav-link" data-scroll-target="#research-plan"><span class="header-section-number">2.2</span> Research Plan</a></li>
-  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</a></li>
+  <li><a href="#missing-value-analysis" id="toc-missing-value-analysis" class="nav-link" data-scroll-target="#missing-value-analysis"><span class="header-section-number">2.3</span> Missing value analysis</a>
+  <ul class="collapse">
+  <li><a href="#layoff-dataset" id="toc-layoff-dataset" class="nav-link" data-scroll-target="#layoff-dataset"><span class="header-section-number">2.3.1</span> Layoff Dataset</a></li>
+  <li><a href="#unemployment-dataset" id="toc-unemployment-dataset" class="nav-link" data-scroll-target="#unemployment-dataset"><span class="header-section-number">2.3.2</span> Unemployment Dataset</a></li>
+  <li><a href="#stock-market-dataset-sp500" id="toc-stock-market-dataset-sp500" class="nav-link" data-scroll-target="#stock-market-dataset-sp500"><span class="header-section-number">2.3.3</span> Stock Market Dataset (S&amp;P500)</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/jagriti-hirwani/EDAV-finalproject-Fall2023/edit/main/data.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/jagriti-hirwani/EDAV-finalproject-Fall2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
@@ -209,8 +214,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Layoff Data: https://layoffdata.com/data/</li>
 </ol>
 <ul>
-<li>Collected by: WARN Database which have citations from various sources mentioned here: https://layoffdata.com/cited/</li>
-<li>Downloaded from a spreadsheet</li>
+<li>Collected by: The federal WARN Act requires large employers to give advance notice of layoffs to state governments and workers. Though states publish this information, no entity collects these layoff notices across the many states. The WARN Database standardizes WARN Notices across the country into a single dataset and the only comprehensive database of worker layoffs.</li>
+<li>Downloaded as an xlsx file from the website</li>
 <li>Format of the data: excel spreadsheet with the following features:
 <ul>
 <li>State</li>
@@ -307,6 +312,8 @@ Attaching package: 'dplyr'</code></pre>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<section id="layoff-dataset" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="layoff-dataset"><span class="header-section-number">2.3.1</span> Layoff Dataset</h3>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -359,7 +366,14 @@ Attaching package: 'dplyr'</code></pre>
 <p><img src="data_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
-<p>We can make the following observations: - We have Company and State information for all records. - ‘Union’ and ‘Temporary/Permanent’ information is missing for almost all records, so we cannot include them in our analysis. - We have around 612 records with no information of the ‘Number of Workers’ laid off, so these records cannot contribute to our analysis. - Columns like ‘Notes’, and ‘Region’ have high fraction of missing values but they don’t play a major role in our analysis. - The high fraction of missing values in ‘Industry’ coulmn, however, could limit our industry wise analysis. Since the critical parts of our analysis will depend on the last 5 years, we can check the missing ratio in that time interval to check if it’s any better.</p>
+<p>We can make the following observations:</p>
+<ul>
+<li>We have Company and State information for all records.</li>
+<li>‘Union’ and ‘Temporary/Permanent’ information is missing for almost all records, so we cannot include them in our analysis.</li>
+<li>We have around 612 records with no information of the ‘Number of Workers’ laid off, so these records cannot contribute to our analysis.</li>
+<li>Columns like ‘Notes’, and ‘Region’ have high fraction of missing values but they don’t play a major role in our analysis.</li>
+<li>The high fraction of missing values in ‘Industry’ coulmn, however, could limit our industry wise analysis. Since the critical parts of our analysis will depend on the last 5 years, we can check the missing ratio in that time interval to check if it’s any better.</li>
+</ul>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -387,7 +401,7 @@ Attaching package: 'dplyr'</code></pre>
 <span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span></span>
 <span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
 <span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Number of Missing Values in Each Column"</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Number of Missing Values in Each Column (2018-2023)"</span>,</span>
 <span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">"Column"</span>,</span>
 <span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Number of Missing Values"</span></span>
 <span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
@@ -424,6 +438,7 @@ Attaching package: 'dplyr'</code></pre>
 </div>
 </div>
 <p>Now, to identify patterns in missing values, we added a new feature to the redav package to address the chalenges of large datasets. We added the parameter ‘threshold’. This controls the percentage of records covered by patterns to be displayed in the graph. For example, if we want to just display patterns which cover 90% of our data, we can pass a value of 0.9.</p>
+<p>Additionally, we also inclined the x-labels.</p>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -474,69 +489,71 @@ Attaching package: 'dplyr'</code></pre>
 <span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">scale_alpha_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(.<span class="dv">7</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
 <span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">ylab</span>(<span class="st">"missing pattern"</span>) <span class="sc">+</span></span>
 <span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">"none"</span>, <span class="at">alpha =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme_classic</span>(<span class="dv">12</span>)</span>
-<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># check for "none missing" pattern</span></span>
-<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    none_missing_pattern <span class="ot">&lt;-</span> na_count_by_pattern <span class="sc">%&gt;%</span></span>
-<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">filter</span>(.data<span class="sc">$</span>none_missing) <span class="sc">%&gt;%</span></span>
-<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">pull</span>(.data<span class="sc">$</span>pattern)</span>
-<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(none_missing_pattern) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
-<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>        main_plot <span class="ot">&lt;-</span> main_plot <span class="sc">+</span></span>
-<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>            ggplot2<span class="sc">::</span><span class="fu">annotate</span>(<span class="st">"text"</span>,</span>
-<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>                <span class="at">x =</span> (<span class="fu">ncol</span>(na_count_all) <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">/</span> <span class="dv">2</span>,</span>
-<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> <span class="fu">nrow</span>(na_count_all) <span class="sc">+</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(none_missing_pattern)),</span>
-<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>                <span class="at">label =</span> <span class="st">"complete cases"</span></span>
-<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a>    <span class="co"># margin plots</span></span>
-<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a>    denom <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(percent, <span class="fu">nrow</span>(x) <span class="sc">/</span> <span class="dv">100</span>, <span class="dv">1</span>)</span>
-<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a>    missing_by_column_plot <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(na_count_by_column, ggplot2<span class="sc">::</span><span class="fu">aes</span>(forcats<span class="sc">::</span><span class="fu">fct_inorder</span>(.data<span class="sc">$</span>var), .data<span class="sc">$</span>count <span class="sc">/</span> denom)) <span class="sc">+</span></span>
-<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"cornflowerblue"</span>, <span class="at">alpha =</span> .<span class="dv">7</span>) <span class="sc">+</span></span>
-<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">n.breaks =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">ylab</span>(<span class="fu">ifelse</span>(percent, <span class="st">"% rows </span><span class="sc">\n</span><span class="st"> missing:"</span>, <span class="st">"num rows </span><span class="sc">\n</span><span class="st"> missing:"</span>)) <span class="sc">+</span></span>
-<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme_linedraw</span>(<span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
-<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>            <span class="at">panel.grid.major.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
-<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>            <span class="at">panel.grid.minor.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>()</span>
-<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>    missing_by_pattern_plot <span class="ot">&lt;-</span></span>
-<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(na_count_by_pattern, ggplot2<span class="sc">::</span><span class="fu">aes</span>(.data<span class="sc">$</span>pattern, .data<span class="sc">$</span>count <span class="sc">/</span> denom, <span class="at">alpha =</span> .data<span class="sc">$</span>none_missing)) <span class="sc">+</span></span>
-<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"cornflowerblue"</span>) <span class="sc">+</span></span>
-<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">coord_flip</span>() <span class="sc">+</span></span>
-<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">n.breaks =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">scale_alpha_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(.<span class="dv">7</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
-<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">ylab</span>(<span class="fu">ifelse</span>(percent, <span class="st">"% rows"</span>, <span class="st">"row count"</span>)) <span class="sc">+</span></span>
-<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">guides</span>(<span class="at">alpha =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
-<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme_linedraw</span>(<span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
-<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>            <span class="at">panel.grid.major.y =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
-<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>            <span class="at">panel.grid.minor.y =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>()</span>
-<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (percent) {</span>
-<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a>        missing_by_column_plot <span class="ot">&lt;-</span> missing_by_column_plot <span class="sc">+</span></span>
-<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>            ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(</span>
-<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a>                <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">n.breaks =</span> <span class="dv">5</span>,</span>
-<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>                <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>)</span>
-<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>        missing_by_pattern_plot <span class="ot">&lt;-</span> missing_by_pattern_plot <span class="sc">+</span></span>
-<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a>            ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(</span>
-<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a>                <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">n.breaks =</span> <span class="dv">5</span>,</span>
-<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a>                <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>)</span>
-<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a>            )</span>
-<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a>    missing_by_column_plot <span class="sc">+</span> patchwork<span class="sc">::</span><span class="fu">plot_spacer</span>() <span class="sc">+</span></span>
-<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a>        main_plot <span class="sc">+</span> missing_by_pattern_plot <span class="sc">+</span></span>
-<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a>        patchwork<span class="sc">::</span><span class="fu">plot_layout</span>(<span class="at">widths =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>), <span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>))</span>
-<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme_classic</span>(<span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="co">#NEWLY ADDED</span></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    <span class="co"># check for "none missing" pattern</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>    none_missing_pattern <span class="ot">&lt;-</span> na_count_by_pattern <span class="sc">%&gt;%</span></span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">filter</span>(.data<span class="sc">$</span>none_missing) <span class="sc">%&gt;%</span></span>
+<span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>        dplyr<span class="sc">::</span><span class="fu">pull</span>(.data<span class="sc">$</span>pattern)</span>
+<span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(none_missing_pattern) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb12-57"><a href="#cb12-57" aria-hidden="true" tabindex="-1"></a>        main_plot <span class="ot">&lt;-</span> main_plot <span class="sc">+</span></span>
+<span id="cb12-58"><a href="#cb12-58" aria-hidden="true" tabindex="-1"></a>            ggplot2<span class="sc">::</span><span class="fu">annotate</span>(<span class="st">"text"</span>,</span>
+<span id="cb12-59"><a href="#cb12-59" aria-hidden="true" tabindex="-1"></a>                <span class="at">x =</span> (<span class="fu">ncol</span>(na_count_all) <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">/</span> <span class="dv">2</span>,</span>
+<span id="cb12-60"><a href="#cb12-60" aria-hidden="true" tabindex="-1"></a>                <span class="at">y =</span> <span class="fu">nrow</span>(na_count_all) <span class="sc">+</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(none_missing_pattern)),</span>
+<span id="cb12-61"><a href="#cb12-61" aria-hidden="true" tabindex="-1"></a>                <span class="at">label =</span> <span class="st">"complete cases"</span></span>
+<span id="cb12-62"><a href="#cb12-62" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb12-63"><a href="#cb12-63" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb12-64"><a href="#cb12-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-65"><a href="#cb12-65" aria-hidden="true" tabindex="-1"></a>    <span class="co"># margin plots</span></span>
+<span id="cb12-66"><a href="#cb12-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-67"><a href="#cb12-67" aria-hidden="true" tabindex="-1"></a>    denom <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(percent, <span class="fu">nrow</span>(x) <span class="sc">/</span> <span class="dv">100</span>, <span class="dv">1</span>)</span>
+<span id="cb12-68"><a href="#cb12-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-69"><a href="#cb12-69" aria-hidden="true" tabindex="-1"></a>    missing_by_column_plot <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(na_count_by_column, ggplot2<span class="sc">::</span><span class="fu">aes</span>(forcats<span class="sc">::</span><span class="fu">fct_inorder</span>(.data<span class="sc">$</span>var), .data<span class="sc">$</span>count <span class="sc">/</span> denom)) <span class="sc">+</span></span>
+<span id="cb12-70"><a href="#cb12-70" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"cornflowerblue"</span>, <span class="at">alpha =</span> .<span class="dv">7</span>) <span class="sc">+</span></span>
+<span id="cb12-71"><a href="#cb12-71" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">n.breaks =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb12-72"><a href="#cb12-72" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb12-73"><a href="#cb12-73" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">ylab</span>(<span class="fu">ifelse</span>(percent, <span class="st">"% rows </span><span class="sc">\n</span><span class="st"> missing:"</span>, <span class="st">"num rows </span><span class="sc">\n</span><span class="st"> missing:"</span>)) <span class="sc">+</span></span>
+<span id="cb12-74"><a href="#cb12-74" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme_linedraw</span>(<span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb12-75"><a href="#cb12-75" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb12-76"><a href="#cb12-76" aria-hidden="true" tabindex="-1"></a>            <span class="at">panel.grid.major.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb12-77"><a href="#cb12-77" aria-hidden="true" tabindex="-1"></a>            <span class="at">panel.grid.minor.x =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>()</span>
+<span id="cb12-78"><a href="#cb12-78" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">+</span></span>
+<span id="cb12-79"><a href="#cb12-79" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="co"># NEWLY ADDED</span></span>
+<span id="cb12-80"><a href="#cb12-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-81"><a href="#cb12-81" aria-hidden="true" tabindex="-1"></a>    missing_by_pattern_plot <span class="ot">&lt;-</span></span>
+<span id="cb12-82"><a href="#cb12-82" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">ggplot</span>(na_count_by_pattern, ggplot2<span class="sc">::</span><span class="fu">aes</span>(.data<span class="sc">$</span>pattern, .data<span class="sc">$</span>count <span class="sc">/</span> denom, <span class="at">alpha =</span> .data<span class="sc">$</span>none_missing)) <span class="sc">+</span></span>
+<span id="cb12-83"><a href="#cb12-83" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"cornflowerblue"</span>) <span class="sc">+</span></span>
+<span id="cb12-84"><a href="#cb12-84" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb12-85"><a href="#cb12-85" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">n.breaks =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb12-86"><a href="#cb12-86" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">scale_alpha_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(.<span class="dv">7</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb12-87"><a href="#cb12-87" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">xlab</span>(<span class="st">""</span>) <span class="sc">+</span></span>
+<span id="cb12-88"><a href="#cb12-88" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">ylab</span>(<span class="fu">ifelse</span>(percent, <span class="st">"% rows"</span>, <span class="st">"row count"</span>)) <span class="sc">+</span></span>
+<span id="cb12-89"><a href="#cb12-89" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">guides</span>(<span class="at">alpha =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb12-90"><a href="#cb12-90" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme_linedraw</span>(<span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb12-91"><a href="#cb12-91" aria-hidden="true" tabindex="-1"></a>        ggplot2<span class="sc">::</span><span class="fu">theme</span>(</span>
+<span id="cb12-92"><a href="#cb12-92" aria-hidden="true" tabindex="-1"></a>            <span class="at">panel.grid.major.y =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>(),</span>
+<span id="cb12-93"><a href="#cb12-93" aria-hidden="true" tabindex="-1"></a>            <span class="at">panel.grid.minor.y =</span> ggplot2<span class="sc">::</span><span class="fu">element_blank</span>()</span>
+<span id="cb12-94"><a href="#cb12-94" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb12-95"><a href="#cb12-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-96"><a href="#cb12-96" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (percent) {</span>
+<span id="cb12-97"><a href="#cb12-97" aria-hidden="true" tabindex="-1"></a>        missing_by_column_plot <span class="ot">&lt;-</span> missing_by_column_plot <span class="sc">+</span></span>
+<span id="cb12-98"><a href="#cb12-98" aria-hidden="true" tabindex="-1"></a>            ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(</span>
+<span id="cb12-99"><a href="#cb12-99" aria-hidden="true" tabindex="-1"></a>                <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">n.breaks =</span> <span class="dv">5</span>,</span>
+<span id="cb12-100"><a href="#cb12-100" aria-hidden="true" tabindex="-1"></a>                <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>)</span>
+<span id="cb12-101"><a href="#cb12-101" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb12-102"><a href="#cb12-102" aria-hidden="true" tabindex="-1"></a>        missing_by_pattern_plot <span class="ot">&lt;-</span> missing_by_pattern_plot <span class="sc">+</span></span>
+<span id="cb12-103"><a href="#cb12-103" aria-hidden="true" tabindex="-1"></a>            ggplot2<span class="sc">::</span><span class="fu">scale_y_continuous</span>(</span>
+<span id="cb12-104"><a href="#cb12-104" aria-hidden="true" tabindex="-1"></a>                <span class="at">expand =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">n.breaks =</span> <span class="dv">5</span>,</span>
+<span id="cb12-105"><a href="#cb12-105" aria-hidden="true" tabindex="-1"></a>                <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>)</span>
+<span id="cb12-106"><a href="#cb12-106" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb12-107"><a href="#cb12-107" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb12-108"><a href="#cb12-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-109"><a href="#cb12-109" aria-hidden="true" tabindex="-1"></a>    missing_by_column_plot <span class="sc">+</span> patchwork<span class="sc">::</span><span class="fu">plot_spacer</span>() <span class="sc">+</span></span>
+<span id="cb12-110"><a href="#cb12-110" aria-hidden="true" tabindex="-1"></a>        main_plot <span class="sc">+</span> missing_by_pattern_plot <span class="sc">+</span></span>
+<span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a>        patchwork<span class="sc">::</span><span class="fu">plot_layout</span>(<span class="at">widths =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">1</span>), <span class="at">heights =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>))</span>
+<span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -553,8 +570,113 @@ Attaching package: 'dplyr'</code></pre>
 <li>As expected, ‘Industry’ column accounts for most missing values but in most cases it is the only column absent.</li>
 <li>‘Complete Cases’ form the second most observed pattern which is a good sign.</li>
 </ul>
+</section>
+<section id="unemployment-dataset" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="unemployment-dataset"><span class="header-section-number">2.3.2</span> Unemployment Dataset</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"./data/UNRATE.xls"</span>, <span class="at">skip=</span><span class="dv">10</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 2
+  observation_date    UNRATE
+  &lt;dttm&gt;               &lt;dbl&gt;
+1 1948-01-01 00:00:00    3.4
+2 1948-02-01 00:00:00    3.8
+3 1948-03-01 00:00:00    4  
+4 1948-04-01 00:00:00    3.9
+5 1948-05-01 00:00:00    3.5</code></pre>
+</div>
+</div>
+<p>Let’s check for the distribution of missing values across columns in our data.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the number of missing values in each column</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>missing_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(data, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the total number of records in the dataset</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>total_records <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for plotting</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>missing_data_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Column =</span> <span class="fu">names</span>(missing_values), <span class="at">Missing_Values =</span> missing_values)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a bar chart using ggplot2 with text labels on top and total records</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(missing_data_df, <span class="fu">aes</span>(<span class="at">x =</span> Column, <span class="at">y =</span> Missing_Values)) <span class="sc">+</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> <span class="st">"skyblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Missing_Values), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> total_records <span class="sc">+</span> <span class="dv">5</span>, <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"Total Records:"</span>, total_records)),</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Number of Missing Values in Each Column"</span>,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">"Column"</span>,</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Number of Missing Values"</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can see that we have no missing values.</p>
+</section>
+<section id="stock-market-dataset-sp500" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="stock-market-dataset-sp500"><span class="header-section-number">2.3.3</span> Stock Market Dataset (S&amp;P500)</h3>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"./data/HistoricalPrices.csv"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Date    Open    High     Low   Close
+1 11/29/23 4571.84 4587.64 4547.15 4550.58
+2 11/28/23 4545.55 4568.14 4540.51 4554.89
+3 11/27/23 4554.86 4560.52 4546.32 4550.43
+4 11/24/23 4555.84 4560.31 4552.80 4559.34
+5 11/22/23 4553.04 4568.43 4545.05 4556.62</code></pre>
+</div>
+</div>
+<p>Let’s check for the distribution of missing values across columns in our data.</p>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the number of missing values in each column</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>missing_values <span class="ot">&lt;-</span> <span class="fu">sapply</span>(data, <span class="cf">function</span>(x) <span class="fu">sum</span>(<span class="fu">is.na</span>(x)))</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the total number of records in the dataset</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>total_records <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for plotting</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>missing_data_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Column =</span> <span class="fu">names</span>(missing_values), <span class="at">Missing_Values =</span> missing_values)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a bar chart using ggplot2 with text labels on top and total records</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(missing_data_df, <span class="fu">aes</span>(<span class="at">x =</span> Column, <span class="at">y =</span> Missing_Values)) <span class="sc">+</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> <span class="st">"skyblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> Missing_Values), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> total_records <span class="sc">+</span> <span class="dv">5</span>, <span class="at">label =</span> <span class="fu">paste</span>(<span class="st">"Total Records:"</span>, total_records)),</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">vjust =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"black"</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"Number of Missing Values in Each Column"</span>,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">"Column"</span>,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">y =</span> <span class="st">"Number of Missing Values"</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="data_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We can see that we have no missing values.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

@@ -5,8 +5,9 @@
 The datasets we are using for our project are as follows:
 
 1) Layoff Data: https://layoffdata.com/data/
-  - Collected by: WARN Database which have citations from various sources mentioned here: https://layoffdata.com/cited/
-  - Downloaded from a spreadsheet
+  - Collected by: The federal WARN Act requires large employers to give advance notice of layoffs to state governments and workers. Though states publish this information, no entity collects these layoff notices across the many states.
+  The WARN Database standardizes WARN Notices across the country into a single dataset and the only comprehensive database of worker layoffs.
+  - Downloaded as an xlsx file from the website
   - Format of the data: excel spreadsheet with the following features:
     - State 
     - Company
@@ -69,7 +70,6 @@ Examining the causative factors behind current layoffs available in data, we wil
 Finally, our analysis will integrate unemployment rate data to understand the post-layoff trajectories of affected individuals. This examination seeks to ascertain whether individuals subjected to current layoffs will transition swiftly into alternative employment or contribute to an uptick in current unemployment rates by remaining unemployed.
 
 ## Missing value analysis
-
 We will now investigate our data to check for any missing values.
 
 ```{r}
@@ -80,6 +80,8 @@ library(ggplot2)
 library(forcats)
 library(readxl)
 ```
+
+### Layoff Dataset
 
 ```{r}
 data <- read_excel("./data/WARN Database 10-31-2023 [TO EDIT_ FILE-_MAKE A COPY].xlsx")
@@ -114,6 +116,7 @@ ggplot(missing_data_df, aes(x = Column, y = Missing_Values)) +
 ```
 
 We can make the following observations:
+
 - We have Company and State information for all records.
 - 'Union' and 'Temporary/Permanent' information is missing for almost all records, so we cannot include them in our analysis.
 - We have around 612 records with no information of the 'Number of Workers' laid off, so these records cannot contribute to our analysis.
@@ -165,7 +168,9 @@ data <- data[!is.na(data[, "Number of Workers"]), ]
 head(data)
 ```
 
-Now, to identify patterns in missing values, we added a new feature to the redav package to address the chalenges of large datasets. We added the parameter 'threshold'. This controls the percentage of records covered by patterns to be displayed in the graph. For example, if we want to just display patterns which cover 90% of our data, we can pass a value of 0.9.
+Now, to identify patterns in missing values, we added a new feature to the redav package to address the chalenges of large datasets. We added the parameter 'threshold'. This controls the percentage of records covered by patterns to be displayed in the graph. For example, if we want to just display patterns which cover 90% of our data, we can pass a value of 0.9. 
+
+Additionally, we also inclined the x-labels.
 
 ```{r}
 plot_missing <- function(x, percent = TRUE, threshold = 1) {
@@ -215,7 +220,8 @@ plot_missing <- function(x, percent = TRUE, threshold = 1) {
         ggplot2::scale_alpha_manual(values = c(.7, 1)) +
         ggplot2::ylab("missing pattern") +
         ggplot2::guides(fill = "none", alpha = "none") +
-        ggplot2::theme_classic(12)
+        ggplot2::theme_classic(12) +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1)) #NEWLY ADDED
 
     # check for "none missing" pattern
     none_missing_pattern <- na_count_by_pattern %>%
@@ -244,7 +250,8 @@ plot_missing <- function(x, percent = TRUE, threshold = 1) {
         ggplot2::theme(
             panel.grid.major.x = ggplot2::element_blank(),
             panel.grid.minor.x = ggplot2::element_blank()
-        )
+        ) +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1)) # NEWLY ADDED
 
     missing_by_pattern_plot <-
         ggplot2::ggplot(na_count_by_pattern, ggplot2::aes(.data$pattern, .data$count / denom, alpha = .data$none_missing)) +
@@ -290,3 +297,72 @@ We can make the following observations:
 - 'Complete Cases' form the second most observed pattern which is a good sign.
 
 
+### Unemployment Dataset
+
+```{r}
+data <- read_excel("./data/UNRATE.xls", skip=10)
+
+head(data, 5)
+```
+
+Let's check for the distribution of missing values across columns in our data.
+```{r}
+# Calculate the number of missing values in each column
+missing_values <- sapply(data, function(x) sum(is.na(x)))
+
+# Calculate the total number of records in the dataset
+total_records <- nrow(data)
+
+# Create a data frame for plotting
+missing_data_df <- data.frame(Column = names(missing_values), Missing_Values = missing_values)
+
+# Create a bar chart using ggplot2 with text labels on top and total records
+ggplot(missing_data_df, aes(x = Column, y = Missing_Values)) +
+    geom_bar(stat = "identity", fill = "skyblue", color = "black") +
+    geom_text(aes(label = Missing_Values), vjust = -0.5, color = "black") +
+    geom_text(aes(x = 0, y = total_records + 5, label = paste("Total Records:", total_records)),
+        hjust = 0, vjust = 0, color = "black"
+    ) +
+    labs(
+        title = "Number of Missing Values in Each Column",
+        x = "Column",
+        y = "Number of Missing Values"
+    ) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+We can see that we have no missing values.
+
+### Stock Market Dataset (S&P500)
+
+```{r}
+data <- read.csv("./data/HistoricalPrices.csv")
+
+head(data, 5)
+```
+
+Let's check for the distribution of missing values across columns in our data.
+```{r}
+# Calculate the number of missing values in each column
+missing_values <- sapply(data, function(x) sum(is.na(x)))
+
+# Calculate the total number of records in the dataset
+total_records <- nrow(data)
+
+# Create a data frame for plotting
+missing_data_df <- data.frame(Column = names(missing_values), Missing_Values = missing_values)
+
+# Create a bar chart using ggplot2 with text labels on top and total records
+ggplot(missing_data_df, aes(x = Column, y = Missing_Values)) +
+    geom_bar(stat = "identity", fill = "skyblue", color = "black") +
+    geom_text(aes(label = Missing_Values), vjust = -0.5, color = "black") +
+    geom_text(aes(x = 0, y = total_records + 5, label = paste("Total Records:", total_records)),
+        hjust = 0, vjust = 0, color = "black"
+    ) +
+    labs(
+        title = "Number of Missing Values in Each Column",
+        x = "Column",
+        y = "Number of Missing Values"
+    ) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+We can see that we have no missing values.
