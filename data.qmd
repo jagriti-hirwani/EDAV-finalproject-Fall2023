@@ -4,7 +4,7 @@
 
 The datasets we are using for our project are as follows:
 
-1) Layoff Data: https://layoffdata.com/data/
+1) Layoff Data: https://layoffdata.com/data/Raw/Stock_Indices/
   - Collected by: The federal WARN Act requires large employers to give advance notice of layoffs to state governments and workers. Though states publish this information, no entity collects these layoff notices across the many states.
   The WARN Database standardizes WARN Notices across the country into a single dataset and the only comprehensive database of worker layoffs.
   - Downloaded as an xlsx file from the website
@@ -84,7 +84,7 @@ library(readxl)
 ### Layoff Dataset
 
 ```{r}
-data <- read_excel("./data/WARN Database 10-31-2023 [TO EDIT_ FILE-_MAKE A COPY].xlsx")
+data <- read_excel("./data/Raw/Layoff/WARN Database 10-31-2023 [TO EDIT_ FILE-_MAKE A COPY].xlsx")
 
 head(data, 5)
 ```
@@ -300,7 +300,7 @@ We can make the following observations:
 ### Unemployment Dataset
 
 ```{r}
-data <- read_excel("./data/UNRATE.xls", skip=10)
+data <- read_excel("./data/Raw/Unemployment/UNRATE.xls", skip=10)
 
 head(data, 5)
 ```
@@ -335,7 +335,7 @@ We can see that we have no missing values.
 ### Stock Market Dataset (S&P500)
 
 ```{r}
-data <- read.csv("./data/HistoricalPrices.csv")
+data <- read.csv("./data/Raw/Stock_Indices/HistoricalPrices.csv")
 
 head(data, 5)
 ```
