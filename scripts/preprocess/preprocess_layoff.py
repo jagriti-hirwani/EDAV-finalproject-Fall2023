@@ -2,7 +2,7 @@ import pandas as pd
 import re
 
 layoff_data = pd.read_excel(
-    "../../data/Raw/Layoff/WARN Database 10-31-2023 [TO EDIT_ FILE-_MAKE A COPY].xlsx"
+    "data/Raw/Layoff/WARN Database 10-31-2023 [TO EDIT_ FILE-_MAKE A COPY].xlsx"
 )
 
 # drop redundant columns
@@ -63,4 +63,4 @@ layoff_data["industry_cleaned"] = layoff_data["industry_cleaned"].replace(
 )
 
 # Save the processed output
-layoff_data.to_excel("../../data/Clean/layoff_cleaned.xlsx")
+layoff_data.to_excel("data/Clean/layoff_cleaned.xlsx")
