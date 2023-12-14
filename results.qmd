@@ -1,1 +1,112 @@
 # Results
+
+```{r}
+# Installing the necessary packages
+
+library(ggplot2)
+library(readxl)
+library(plotly)
+library(reshape2)
+library(sf)
+```
+
+
+```{r}
+# Reading the data
+
+df_layoff <- read_excel('data/Raw/Layoff/WARN Database 10-31-2023 [TO EDIT_ FILE-_MAKE A COPY].xlsx')
+df_stock <- read.csv('data/Raw/Stock_Indices/HistoricalPrices.csv')
+df_unemp <- read_excel('data/Raw/Unemployment/UNRATE.xls')
+```
+
+```{r}
+head(df_layoff)
+```
+
+
+```{r}
+# Time series plot for layoff numbers
+
+ggplot(df_layoff, aes(x = "Received Date", y = "Number of Workers")) +
+  geom_line() +
+  labs(title = "Time Series Plot for Number of Layoffs",
+       x = "Data Laid Off",
+       y = "Number of Workers")
+
+
+
+plot_ly(df_layoff, x = "Received Date", y = "Number of Workers", type = 'scatter', mode = 'lines') %>%
+  layout(title = "Time Series Plot for Number of Layoffs",
+         xaxis = list(title = "Data Laid Off"),
+         yaxis = list(title = "Number of Workers"))
+
+
+```
+
+
+```{r}
+
+# Time series for Stock Vs Layoff
+
+df_stock$Date <- as.Data(df_stock$Date)
+
+# Merging the stock data with layoff data
+merged_data <- merge(df_layoff, df_stock, by.x = "Received Date", by.y = "Date")
+
+melted_data <- melt(merged_data, id.vars = "Date")
+
+ggplot(melted_data, aes(x = Date, y = value, color = variable)) +
+  geom_line() +
+  labs(title = "Comparison of Two Time Series",
+       x = "Date",
+       y = "Value") +
+  scale_color_manual(values = c("Value1" = "blue", "Value2" = "red"))
+
+
+```
+
+```{r}
+
+# Geographical Analysis
+
+url <- "https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_state_20m.zip"
+temp <- tempfile(fileext = ".zip")
+download.file(url, temp, mode = "wb")
+unzip(temp, exdir = ".")
+
+states <- st_read("cb_2022_us_state_20m.shp")
+
+city_data <- merge(df_layoff, states, by.x = "STUSPS", by.y = "City", all.x = TRUE)
+
+ggplot() +
+  geom_sf(data = city_data, aes(fill = "Number of Workers"), color = "white", size = 0.2) +
+  scale_fill_viridis_c() +
+  theme_minimal() +
+  labs(title = "Choropleth Map of City Values")
+
+
+```
+
+
+```{r}
+
+# Time between notice and exit date
+
+df_layoff$DateDiff <- as.numeric(df_layoff$`Received Date` - df_layoff$`Effective Date`)
+
+# Visualizing the distribution
+
+ggplot(df_layoff, aes(x = DateDiff)) +
+  geom_histogram(binwidth = 0.5, fill = "lightblue", color = "black", aes(y = ..density..)) +
+  labs(title = "Histogram of Values", x = "Value", y = "Density")
+
+
+```
+
+
+```{r}
+
+# Analysing the correlation between
+
+```
+
