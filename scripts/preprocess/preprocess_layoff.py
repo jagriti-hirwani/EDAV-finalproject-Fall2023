@@ -63,4 +63,4 @@ layoff_data["industry_cleaned"] = layoff_data["industry_cleaned"].replace(
 )
 
 # Save the processed output
-layoff_data.to_excel("data/Clean/layoff_cleaned.xlsx")
+layoff_data.to_excel("data/Clean/layoff_cleaned.xlsx", index=False)
