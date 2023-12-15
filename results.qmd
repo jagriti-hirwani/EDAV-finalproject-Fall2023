@@ -1,112 +1,300 @@
 # Results
 
 ```{r}
-# Installing the necessary packages
-
+#| vscode: {languageId: r}
+library(dplyr)
+library(tibble)
+library(tidyr)
 library(ggplot2)
+library(forcats)
 library(readxl)
-library(plotly)
-library(reshape2)
-library(sf)
-```
-
-
-```{r}
-# Reading the data
-
-df_layoff <- read_excel('data/Raw/Layoff/WARN Database 10-31-2023 [TO EDIT_ FILE-_MAKE A COPY].xlsx')
-df_stock <- read.csv('data/Raw/Stock_Indices/HistoricalPrices.csv')
-df_unemp <- read_excel('data/Raw/Unemployment/UNRATE.xls')
+library(lubridate)
+library(patchwork)
+library(stringr)
 ```
 
 ```{r}
-head(df_layoff)
-```
-
-
-```{r}
-# Time series plot for layoff numbers
-
-ggplot(df_layoff, aes(x = "Received Date", y = "Number of Workers")) +
-  geom_line() +
-  labs(title = "Time Series Plot for Number of Layoffs",
-       x = "Data Laid Off",
-       y = "Number of Workers")
-
-
-
-plot_ly(df_layoff, x = "Received Date", y = "Number of Workers", type = 'scatter', mode = 'lines') %>%
-  layout(title = "Time Series Plot for Number of Layoffs",
-         xaxis = list(title = "Data Laid Off"),
-         yaxis = list(title = "Number of Workers"))
-
-
-```
-
-
-```{r}
-
-# Time series for Stock Vs Layoff
-
-df_stock$Date <- as.Data(df_stock$Date)
-
-# Merging the stock data with layoff data
-merged_data <- merge(df_layoff, df_stock, by.x = "Received Date", by.y = "Date")
-
-melted_data <- melt(merged_data, id.vars = "Date")
-
-ggplot(melted_data, aes(x = Date, y = value, color = variable)) +
-  geom_line() +
-  labs(title = "Comparison of Two Time Series",
-       x = "Date",
-       y = "Value") +
-  scale_color_manual(values = c("Value1" = "blue", "Value2" = "red"))
-
-
+#| vscode: {languageId: r}
+layoff_data <- read.csv("./data/Clean/layoff_cleaned_2.csv")
+layoff_data <- layoff_data |> rename(Date = `Received.Date`)
+unemployment_data <- read_excel("./data/Raw/Unemployment/UNRATE.xls", skip = 10)
+unemployment_data <- unemployment_data |> rename(Date = observation_date)
+# head(layoff_data, 5)
 ```
 
 ```{r}
-
-# Geographical Analysis
-
-url <- "https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_state_20m.zip"
-temp <- tempfile(fileext = ".zip")
-download.file(url, temp, mode = "wb")
-unzip(temp, exdir = ".")
-
-states <- st_read("cb_2022_us_state_20m.shp")
-
-city_data <- merge(df_layoff, states, by.x = "STUSPS", by.y = "City", all.x = TRUE)
-
-ggplot() +
-  geom_sf(data = city_data, aes(fill = "Number of Workers"), color = "white", size = 0.2) +
-  scale_fill_viridis_c() +
-  theme_minimal() +
-  labs(title = "Choropleth Map of City Values")
-
-
+#| vscode: {languageId: r}
+layoff_data$Date <- as.POSIXct(layoff_data$Date, format = "%Y-%m-%d")
+layoff_data$effective_date_cleaned <- as.POSIXct(layoff_data$effective_date_cleaned, format = "%Y-%m-%d")
 ```
-
 
 ```{r}
-
-# Time between notice and exit date
-
-df_layoff$DateDiff <- as.numeric(df_layoff$`Received Date` - df_layoff$`Effective Date`)
-
-# Visualizing the distribution
-
-ggplot(df_layoff, aes(x = DateDiff)) +
-  geom_histogram(binwidth = 0.5, fill = "lightblue", color = "black", aes(y = ..density..)) +
-  labs(title = "Histogram of Values", x = "Value", y = "Density")
-
-
+#| vscode: {languageId: r}
+head(layoff_data)
 ```
-
 
 ```{r}
+#| vscode: {languageId: r}
+dji_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/DowJonesIndex.csv")
+snp_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/S&P500.csv")
+nasdaq_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/NASDAQ.csv")
 
-# Analysing the correlation between
-
+dji_stock_indices_data$Date <- as.POSIXct(dji_stock_indices_data$Date, format = "%m/%d/%y")
+snp_stock_indices_data$Date <- as.POSIXct(snp_stock_indices_data$Date, format = "%m/%d/%y")
+nasdaq_stock_indices_data$Date <- as.POSIXct(nasdaq_stock_indices_data$Date, format = "%Y-%m-%d")
 ```
+
+```{r}
+#| vscode: {languageId: r}
+# Convert Date to the last date of the month
+layoff_data <- layoff_data %>%
+    mutate(
+        last_day_of_month = floor_date(Date, "month") +
+            days(days_in_month(Date) - 1)
+    )
+
+# Aggregate data at the monthly level
+monthly_aggregated <- layoff_data %>%
+    group_by(last_day_of_month) %>%
+    summarize(num_of_workers_agg = sum(`Number.of.Workers`, na.rm = TRUE))
+```
+
+```{r}
+#| vscode: {languageId: r}
+# filtered_layoff_data$`num_workers_scaled` <- filtered_layoff_data$`Number of Workers` / filtered_layoff_data$`Number of Workers`[1]*100
+# snp_stock_indices_data$close_scaled <- snp_stock_indices_data$Close / snp_stock_indices_data$Close[1] * 100
+# dji_stock_indices_data$close_scaled <- dji_stock_indices_data$Close / dji_stock_indices_data$Close[1] * 100
+# nasdaq_stock_indices_data$close_scaled <- nasdaq_stock_indices_data$Close / nasdaq_stock_indices_data$Close[1] * 100
+```
+
+```{r}
+#| vscode: {languageId: r}
+start_date <- as.POSIXct("2007-01-01")
+end_date <- as.POSIXct("2019-12-31")
+
+layoff_plot <- ggplot() +
+    geom_line(
+        data = monthly_aggregated |> filter(last_day_of_month >= start_date, last_day_of_month <= end_date),
+        aes(x = last_day_of_month, y = num_of_workers_agg)
+    ) +
+    labs(
+        y = "Layoffs per month",
+        x = "",
+        title = "Study of Layoff and Market Performace between 2018-2023",
+        subtitle = "Layoff Trend",
+    ) +
+    theme_bw() +
+    # theme(plot.title = element_text(face = "bold")) +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+
+stock_indices_plot <- ggplot() +
+    geom_line(
+        data = snp_stock_indices_data |> filter(Date >= start_date, Date <= end_date),
+        aes(x = Date, y = Close, color = "S&P500")
+    ) +
+    geom_line(
+        data = dji_stock_indices_data |> filter(Date >= start_date, Date <= end_date),
+        aes(x = Date, y = Close, color = "Dow Jones Index")
+    ) +
+    geom_line(
+        data = nasdaq_stock_indices_data |> filter(Date >= start_date, Date <= end_date),
+        aes(x = Date, y = Close, color = "NASDAQ Composite")
+    ) +
+    labs(
+        y = "Market Value",
+        x = "Time",
+        subtitle = "Major US Stock Indices",
+    ) +
+    theme_bw() +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+
+layoff_plot / stock_indices_plot
+```
+
+```{r}
+#| vscode: {languageId: r}
+start_date <- as.POSIXct("2018-01-01")
+end_date <- as.POSIXct("2023-12-31")
+
+
+layoff_plot <- ggplot() +
+    geom_line(
+        data = monthly_aggregated |> filter(last_day_of_month >= start_date, last_day_of_month <= end_date),
+        aes(x = last_day_of_month, y = num_of_workers_agg)
+    ) +
+    labs(
+        y = "Layoffs per month",
+        x = "",
+        title = "Study of Layoff and Market Performace between 2018-2023",
+        subtitle = "Layoff Trend",
+    ) +
+    theme_bw() +
+    # theme(plot.title = element_text(face = "bold")) +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+
+stock_indices_plot <- ggplot() +
+    geom_line(
+        data = snp_stock_indices_data |> filter(Date >= start_date, Date <= end_date),
+        aes(x = Date, y = Close, color = "S&P500")
+    ) +
+    geom_line(
+        data = dji_stock_indices_data |> filter(Date >= start_date, Date <= end_date),
+        aes(x = Date, y = Close, color = "Dow Jones Index")
+    ) +
+    geom_line(
+        data = nasdaq_stock_indices_data |> filter(Date >= start_date, Date <= end_date),
+        aes(x = Date, y = Close, color = "NASDAQ Composite")
+    ) +
+    labs(
+        y = "Market Value",
+        x = "Time",
+        subtitle = "Major US Stock Indices",
+    ) +
+    theme_bw() +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+
+layoff_plot / stock_indices_plot
+```
+
+```{r}
+#| vscode: {languageId: r}
+start_date <- as.POSIXct("2021-01-01")
+end_date <- as.POSIXct("2023-12-31")
+
+
+layoff_plot <- ggplot() +
+    geom_line(
+        data = monthly_aggregated |> filter(last_day_of_month >= start_date, last_day_of_month <= end_date),
+        aes(x = last_day_of_month, y = num_of_workers_agg)
+    ) +
+    labs(
+        y = "Layoffs per month",
+        x = "",
+        title = "Study of Layoff and Market Performace between 2021-2023",
+        subtitle = "Layoff Trend",
+    ) +
+    theme_bw() +
+    # theme(plot.title = element_text(face = "bold")) +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+
+stock_indices_plot <- ggplot() +
+    geom_line(
+        data = snp_stock_indices_data |> filter(Date >= start_date, Date <= end_date),
+        aes(x = Date, y = Close, color = "S&P500")
+    ) +
+    geom_line(
+        data = dji_stock_indices_data |> filter(Date >= start_date, Date <= end_date),
+        aes(x = Date, y = Close, color = "Dow Jones Index")
+    ) +
+    geom_line(
+        data = nasdaq_stock_indices_data |> filter(Date >= start_date, Date <= end_date),
+        aes(x = Date, y = Close, color = "NASDAQ Composite")
+    ) +
+    labs(
+        y = "Market Value",
+        x = "Time",
+        subtitle = "Major US Stock Indices",
+    ) +
+    theme_bw() +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+
+layoff_plot / stock_indices_plot
+```
+
+```{r}
+#| vscode: {languageId: r}
+start_date <- as.POSIXct("2018-01-01")
+end_date <- as.POSIXct("2023-12-31")
+pk <- ggplot(
+    data = monthly_aggregated |> filter(last_day_of_month >= start_date, last_day_of_month <= end_date),
+    aes(x = last_day_of_month, y = num_of_workers_agg)
+) +
+    geom_line() +
+    labs(
+        x = "",
+        y = "Layoffs per month",
+        title = "Study of Layoff and Unemployment Trend between 2018-2023",
+        subtitle = "Layoff Trend"
+    ) +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+
+pd <- ggplot(
+    data = unemployment_data |> filter(Date >= start_date, Date <= end_date),
+    aes(x = Date, y = UNRATE)
+) +
+    geom_line() +
+    labs(
+        x = "Time",
+        y = "Unemployment Rate",
+        subtitle = "Unemployment Trend"
+    ) +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+# pk
+pk / pd
+```
+
+```{r}
+#| vscode: {languageId: r}
+start_date <- as.POSIXct("2021-01-01")
+end_date <- as.POSIXct("2023-12-31")
+pk <- ggplot(
+    data = monthly_aggregated |> filter(last_day_of_month >= start_date, last_day_of_month <= end_date),
+    aes(x = last_day_of_month, y = num_of_workers_agg)
+) +
+    geom_line() +
+    labs(
+        x = "",
+        y = "Layoffs per month",
+        title = "Study of Layoff and Unemployment Trend between 2021-2023",
+        subtitle = "Layoff Trend"
+    ) +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+
+pd <- ggplot(
+    data = unemployment_data |> filter(Date >= start_date, Date <= end_date),
+    aes(x = Date, y = UNRATE)
+) +
+    geom_line() +
+    labs(
+        x = "Time",
+        y = "Unemployment Rate",
+        subtitle = "Unemployment Trend"
+    ) +
+    scale_y_continuous(labels = scales::number_format(scale = 1))
+# pk
+pk / pd
+```
+
+```{r}
+#| vscode: {languageId: r}
+layoff_data$year <- as.numeric(format(layoff_data$Date, "%Y"))
+
+layoff_reason_summary <- layoff_data |>
+    drop_na(layoff_type_cleaned) |>
+    group_by(year, layoff_type_cleaned) |>
+    summarize(total_layoffs = sum(`Number.of.Workers`, na.rm = TRUE))
+```
+
+```{r}
+#| vscode: {languageId: r}
+options(repr.plot.width = 20, repr.plot.height = 12)
+start_date <- 2018
+end_date <- 2023
+
+# Create a Cleveland dot plot
+ggplot(
+    layoff_reason_summary |> filter(year >= start_date, year <= end_date),
+    aes(y = reorder(layoff_type_cleaned, total_layoffs), x = total_layoffs)
+) +
+    geom_point() +
+    facet_wrap(~year, nrow = 1) +
+    labs(
+        y = "Layoff Reason",
+        x = "# of Workers Laid off",
+        title = "Study of Layoff reasons over the recent years 2018 - 2023"
+    ) +
+    theme_bw() +
+    scale_x_continuous(labels = scales::number_format(scale = 1))
+```
+
 
