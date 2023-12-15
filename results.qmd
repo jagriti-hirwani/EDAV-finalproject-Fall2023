@@ -11,6 +11,10 @@ library(readxl)
 library(lubridate)
 library(patchwork)
 library(stringr)
+library(plotly)
+library(reshape2)
+library(sf)
+library(jsonlite)
 ```
 
 ```{r}
@@ -42,6 +46,119 @@ nasdaq_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/NASDAQ.csv")
 dji_stock_indices_data$Date <- as.POSIXct(dji_stock_indices_data$Date, format = "%m/%d/%y")
 snp_stock_indices_data$Date <- as.POSIXct(snp_stock_indices_data$Date, format = "%m/%d/%y")
 nasdaq_stock_indices_data$Date <- as.POSIXct(nasdaq_stock_indices_data$Date, format = "%Y-%m-%d")
+```
+
+```{r}
+# Time series plot for layoff numbers
+
+layoff_data_2015 <- layoff_data %>%
+    filter(Date > as.Date("2015-01-01"))
+
+# Extract month and year from Date
+agg_layoffs <- layoff_data_2015 %>%
+    group_by(month = format(Date, "%Y-%m")) %>%
+    summarize(total_laid_off = sum(`Number.of.Workers`))
+
+agg_layoffs$month <- as.Date(paste0(agg_layoffs$month, "-01"), format = "%Y-%m-%d")
+
+ggplot(agg_layoffs, aes(x = month, y = total_laid_off)) +
+    geom_line() +
+    geom_point() +
+    labs(
+        title = "Number.of.Workers Laid Off Each Month",
+        x = "Month",
+        y = "Total Laid Off"
+    ) +
+    theme_minimal()
+
+
+
+plot_ly(layoff_data, x = ~Date, y = ~`Number.of.Workers`, type = "scatter", mode = "lines") %>%
+    layout(
+        title = "Time Series Plot for Number of Layoffs",
+        xaxis = list(title = "Data Laid Off"),
+        yaxis = list(title = "Number.of.Workers")
+    )
+```
+
+
+```{r}
+url <- "https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_state_20m.zip"
+temp <- tempfile(fileext = ".zip")
+download.file(url, temp, mode = "wb")
+unzip(temp, exdir = "./data/Raw/Map")
+
+states <- st_read("./data/Raw/Map/cb_2022_us_state_20m.shp")
+
+layoff_data_city <- layoff_data_2015 %>%
+    group_by(State) %>%
+    summarize(total_laid_off_state = sum(`Number.of.Workers`))
+
+city_data <- merge(states, layoff_data_city, by.x = "NAME", by.y = "State", all.x = TRUE)
+
+ggplot() +
+    geom_sf(data = city_data, aes(fill = total_laid_off_state), color = "white", size = 0.2) +
+    scale_fill_viridis_c(labels = scales::number_format(scale = 1e-3, suffix = "K")) +
+    theme_minimal() +
+    labs(title = "Choropleth Map of Number.of.Workers Laid off in Each State") +
+    coord_sf(xlim = c(-125, -66))
+```
+
+```{r}
+
+layoff_data_2015$Date <- as.Date(layoff_data_2015$Date, format = "%Y-%m-%d")
+layoff_data_2015$effective_date_cleaned <- as.Date(layoff_data_2015$effective_date_cleaned, format = "%Y-%m-%d")
+
+# Calculate the difference in days between the two dates
+layoff_data_2015$days_difference <- as.numeric(difftime(layoff_data_2015$effective_date_cleaned, layoff_data_2015$Date, units = "days"))
+
+# Plot the histogram
+ggplot(layoff_data_2015, aes(x = days_difference)) +
+    geom_histogram(binwidth = 1, fill = "skyblue", color = "black", alpha = 0.7) +
+    labs(
+        title = "Distribution of Days Between Date Received and Effective Date",
+        x = "Days Difference",
+        y = "Frequency"
+    ) +
+    theme_minimal()
+
+```
+
+
+```{r}
+
+remove_outliers_z <- function(data, column, threshold = 0.5) {
+    z_scores <- scale(data[[column]])
+    data[abs(z_scores) < threshold, , drop = FALSE]
+}
+
+# Remove outliers
+data_no_outliers_z <- remove_outliers_z(layoff_data_2015, "days_difference")
+
+
+ggplot(data_no_outliers_z, aes(x = days_difference)) +
+    geom_histogram(binwidth = 1, fill = "skyblue", color = "black", alpha = 0.7) +
+    labs(
+        title = "Distribution of Days Between Date Received and Effective Date",
+        x = "Days Difference",
+        y = "Frequency"
+    ) +
+    theme_minimal()
+```
+
+```{r}
+# df_no_missing <- layoff_data[complete.cases(layoff_data$Date), ]
+```
+
+```{r}
+# df_no_missing[is.na(df_no_missing$`Date`),]
+```
+
+
+```{r}
+
+# json_data <- toJSON(df_no_missing, pretty = TRUE)
+# writeLines(json_data, "data/Clean/layoff_json.json")
 ```
 
 ```{r}
@@ -296,5 +413,4 @@ ggplot(
     theme_bw() +
     scale_x_continuous(labels = scales::number_format(scale = 1))
 ```
-
 
