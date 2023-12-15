@@ -41,7 +41,7 @@ d3.csv(dataURL).then(function (data) {
 
         console.log(reasonsCount);
 
-        const top10Reasons = reasonsCount.slice(0, 10);
+        const top10Reasons = reasonsCount.filter(d => d.Reason !== "NA").slice(0, 10);
 
         const xScale = d3.scaleBand()
             .domain(top10Reasons.map(d => d.Reason))
