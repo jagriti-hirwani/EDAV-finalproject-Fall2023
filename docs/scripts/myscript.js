@@ -13,7 +13,7 @@ d3.csv(dataURL).then(function (data) {
     });
 
     // Initial setup
-    const margin = { top: 20, right: 40, bottom: 20, left: 40 };
+    const margin = { top: 40, right: 40, bottom: 80, left: 60 }; // Increased bottom margin for better label visibility
     const width = 800 - margin.left - margin.right;
     const height = 400 - margin.top - margin.bottom;
 
@@ -54,26 +54,35 @@ d3.csv(dataURL).then(function (data) {
 
         svg.selectAll("*").remove(); // Clear previous chart
 
-        // Draw bars
+        // Draw bars with transition
         svg.selectAll("rect")
             .data(top10Reasons)
             .enter().append("rect")
             .attr("x", d => xScale(d.Reason))
-            .attr("y", d => yScale(d['Number of Workers']))
+            .attr("y", height) // Starting from the bottom for a smoother transition
             .attr("width", xScale.bandwidth())
-            .attr("height", d => height - yScale(d['Number of Workers']))
-            .attr("fill", "steelblue");
-        // Add axes
+            .attr("height", 0)
+            .attr("fill", "#69b3a2") // Different color scheme
+            .transition()
+            .duration(1000) // Transition duration in milliseconds
+            .attr("y", d => yScale(d['Number of Workers']))
+            .attr("height", d => height - yScale(d['Number of Workers']));
+
+        // Add axes with transitions
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
+            .transition()
+            .duration(1000)
             .call(d3.axisBottom(xScale));
 
         svg.append("g")
+            .transition()
+            .duration(1000)
             .call(d3.axisLeft(yScale));
 
         // Add labels
         svg.append("text")
-            .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top) + ")")
+            .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.top + 30) + ")") // Adjusted label position
             .style("text-anchor", "middle")
             .text("Reason for Layoff");
 
@@ -81,7 +90,7 @@ d3.csv(dataURL).then(function (data) {
             .attr("transform", "rotate(-90)")
             .attr("y", 0 - margin.left)
             .attr("x", 0 - (height / 2))
-            .attr("dy", "0.8em")
+            .attr("dy", "1em")
             .style("text-anchor", "middle")
             .text("Number of Workers Laid Off");
 

@@ -1,6 +1,5 @@
-#
-#
-#
+# Results
+```{r}
 #| vscode: {languageId: r}
 library(dplyr)
 library(tibble)
@@ -15,29 +14,23 @@ library(plotly)
 library(reshape2)
 library(sf)
 library(jsonlite)
-#
-#
-#
+```
+```{r}
 #| vscode: {languageId: r}
 layoff_data <- read.csv("./data/Clean/layoff_cleaned_2.csv")
 layoff_data <- layoff_data |> rename(Date = `Received.Date`)
 unemployment_data <- read_excel("./data/Raw/Unemployment/UNRATE.xls", skip = 10)
 unemployment_data <- unemployment_data |> rename(Date = observation_date)
 # head(layoff_data, 5)
-#
-#
-#
+```
+
+```{r}
 #| vscode: {languageId: r}
 layoff_data$Date <- as.POSIXct(layoff_data$Date, format = "%Y-%m-%d")
 layoff_data$effective_date_cleaned <- as.POSIXct(layoff_data$effective_date_cleaned, format = "%Y-%m-%d")
-#
-#
-#
-#| vscode: {languageId: r}
-head(layoff_data)
-#
-#
-#
+```
+
+```{r}
 #| vscode: {languageId: r}
 dji_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/DowJonesIndex.csv")
 snp_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/S&P500.csv")
@@ -46,11 +39,10 @@ nasdaq_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/NASDAQ.csv")
 dji_stock_indices_data$Date <- as.POSIXct(dji_stock_indices_data$Date, format = "%m/%d/%y")
 snp_stock_indices_data$Date <- as.POSIXct(snp_stock_indices_data$Date, format = "%m/%d/%y")
 nasdaq_stock_indices_data$Date <- as.POSIXct(nasdaq_stock_indices_data$Date, format = "%Y-%m-%d")
-#
-#
-#
-# Time series plot for layoff numbers
+```
 
+```{r}
+# Time series plot for layoff numbers
 layoff_data_2015 <- layoff_data %>%
     filter(Date > as.Date("2015-01-01"))
 
@@ -79,10 +71,14 @@ plot_ly(layoff_data, x = ~Date, y = ~`Number.of.Workers`, type = "scatter", mode
         xaxis = list(title = "Data Laid Off"),
         yaxis = list(title = "Number.of.Workers")
     )
+```
 #
-#
-#
-#
+
+**Inferences**: 
+
+-  We can see that number of layoffs between 2015 and 2023 peaked in March 2020 with around 23695 employees laid off and in July 2023, where around 20000 employees were laid off. The layoffs were high throughout 2020 and entered 2021. The next season of layoffs occured around April - July in 2023.
+
+```{r}
 url <- "https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_state_20m.zip"
 temp <- tempfile(fileext = ".zip")
 download.file(url, temp, mode = "wb")
@@ -102,10 +98,13 @@ ggplot() +
     theme_minimal() +
     labs(title = "Choropleth Map of Number.of.Workers Laid off in Each State") +
     coord_sf(xlim = c(-125, -66))
-#
-#
-#
+```
 
+**Inferences**: 
+
+- We can see that California has the highest number of layoffs so far with a very high difference compared to other states. This makes sense as it is the hub of major companies.
+
+```{r}
 layoff_data_2015$Date <- as.Date(layoff_data_2015$Date, format = "%Y-%m-%d")
 layoff_data_2015$effective_date_cleaned <- as.Date(layoff_data_2015$effective_date_cleaned, format = "%Y-%m-%d")
 
@@ -121,12 +120,14 @@ ggplot(layoff_data_2015, aes(x = days_difference)) +
         y = "Frequency"
     ) +
     theme_minimal()
-
-#
-#
-#
+```
 #
 
+**Inferences**: 
+
+- Here we examine how much time employees were given to find another job by finding the distribution of the difference of days when they received the notice and their last working date. We observe that generally they are given around 180 - 200 days. However in some case there are outliers where they are given 1800 or so days, this appears to be a flaw in the data which can be investigated.
+
+```{r}
 remove_outliers_z <- function(data, column, threshold = 0.5) {
     z_scores <- scale(data[[column]])
     data[abs(z_scores) < threshold, , drop = FALSE]
@@ -144,24 +145,18 @@ ggplot(data_no_outliers_z, aes(x = days_difference)) +
         y = "Frequency"
     ) +
     theme_minimal()
-#
-#
-#
+```
+```{r}
 # df_no_missing <- layoff_data[complete.cases(layoff_data$Date), ]
-#
-#
-#
 # df_no_missing[is.na(df_no_missing$`Date`),]
 #
-#
-#
-#
+```
 
+```{r}
 # json_data <- toJSON(df_no_missing, pretty = TRUE)
 # writeLines(json_data, "data/Clean/layoff_json.json")
-#
-#
-#
+```
+```{r}
 #| vscode: {languageId: r}
 # Convert Date to the last date of the month
 layoff_data <- layoff_data %>%
@@ -174,17 +169,15 @@ layoff_data <- layoff_data %>%
 monthly_aggregated <- layoff_data %>%
     group_by(last_day_of_month) %>%
     summarize(num_of_workers_agg = sum(`Number.of.Workers`, na.rm = TRUE))
-#
-#
-#
+```
+```{r}
 #| vscode: {languageId: r}
 # filtered_layoff_data$`num_workers_scaled` <- filtered_layoff_data$`Number of Workers` / filtered_layoff_data$`Number of Workers`[1]*100
 # snp_stock_indices_data$close_scaled <- snp_stock_indices_data$Close / snp_stock_indices_data$Close[1] * 100
 # dji_stock_indices_data$close_scaled <- dji_stock_indices_data$Close / dji_stock_indices_data$Close[1] * 100
 # nasdaq_stock_indices_data$close_scaled <- nasdaq_stock_indices_data$Close / nasdaq_stock_indices_data$Close[1] * 100
-#
-#
-#
+```
+```{r}
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2007-01-01")
 end_date <- as.POSIXct("2019-12-31")
@@ -226,9 +219,13 @@ stock_indices_plot <- ggplot() +
     scale_y_continuous(labels = scales::number_format(scale = 1))
 
 layoff_plot / stock_indices_plot
-#
-#
-#
+```
+
+**Inferences**: 
+
+- Here we study the relation between layoff trends and market trends between 2007-2019. We see that around 2007-2009 there is a significant dip in Dow Jones Index, and a corresponding spike in the number of layoffs. 
+
+```{r}
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2018-01-01")
 end_date <- as.POSIXct("2023-12-31")
@@ -271,9 +268,13 @@ stock_indices_plot <- ggplot() +
     scale_y_continuous(labels = scales::number_format(scale = 1))
 
 layoff_plot / stock_indices_plot
-#
-#
-#
+```
+
+**Inferences**: 
+
+- Here we study market and layoff trends between 2018-2023. The market went low around 2020 which was during covid and it also resulted in increasing layoffs. However, entering into 2021, we notice that the market recovered and consequently, we notice that the layoff rate also declined.
+
+```{r}
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2021-01-01")
 end_date <- as.POSIXct("2023-12-31")
@@ -316,9 +317,14 @@ stock_indices_plot <- ggplot() +
     scale_y_continuous(labels = scales::number_format(scale = 1))
 
 layoff_plot / stock_indices_plot
-#
-#
-#
+```
+
+**Inferences**: 
+
+- We narrow down our observation to study market and layoff trends in the recent times between 2021-2023. The dips in the market align with the peaks in the layoff, signifying a negative correlation between market conditions and layoff rates.
+
+
+```{r}
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2018-01-01")
 end_date <- as.POSIXct("2023-12-31")
@@ -348,9 +354,14 @@ pd <- ggplot(
     scale_y_continuous(labels = scales::number_format(scale = 1))
 # pk
 pk / pd
-#
-#
-#
+```
+
+
+**Inferences**: 
+
+- We analyze the relation between unemloyment rates and the layoffs per month and whether the data supports our hypothesis that increasing layoffs and increasing unemployment rate are correlated. Between 2018 - 2023, we can see that the unemployment rate increased greatly in 2020 and steadily declined during 2021. This can also be seen in the layoff per month graph where the layoffs peaked in 2020 and started to come down in 2021.
+
+```{r}
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2021-01-01")
 end_date <- as.POSIXct("2023-12-31")
@@ -380,9 +391,15 @@ pd <- ggplot(
     scale_y_continuous(labels = scales::number_format(scale = 1))
 # pk
 pk / pd
-#
-#
-#
+```
+
+
+**Inferences**: 
+
+- Narrowing down our analysis to recent trends between 2021-2023, we see that there is a slight inconsistency in the trends. Although the unemployment rates are decreasing in 2022 and 2023, there is a significant increase in number of layoffs in 2023.
+
+
+```{r}
 #| vscode: {languageId: r}
 layoff_data$year <- as.numeric(format(layoff_data$Date, "%Y"))
 
@@ -390,9 +407,8 @@ layoff_reason_summary <- layoff_data |>
     drop_na(layoff_type_cleaned) |>
     group_by(year, layoff_type_cleaned) |>
     summarize(total_layoffs = sum(`Number.of.Workers`, na.rm = TRUE))
-#
-#
-#
+```
+```{r}
 #| vscode: {languageId: r}
 options(repr.plot.width = 20, repr.plot.height = 12)
 start_date <- 2018
@@ -412,8 +428,50 @@ ggplot(
     ) +
     theme_bw() +
     scale_x_continuous(labels = scales::number_format(scale = 1))
-#
-#
-#
-#
-#
+```
+
+**Inferences**: 
+
+- With the above graph, we want to analyse the major reason for layoffs across different years from 2018-2023. Most of the layoffs in 2020 were temporary because businesses were expecting to recover with time, but in other years, the layoffs although much lower in number are of permanent nature.
+
+
+```{r}
+#| vscode: {languageId: r}
+# each year's top 10 industries in terms of layoffs
+industry_summary <- layoff_data |>
+    drop_na(industry_cleaned) |>
+    group_by(year, industry_cleaned) |>
+    summarize(total_layoffs = sum(`Number.of.Workers`, na.rm = TRUE)) |>
+    ungroup() |>
+    group_by(year) %>%
+    arrange(desc(total_layoffs)) %>%
+    slice_head(n = 10)
+```
+
+```{r, width=12, fig.height=5}
+#| vscode: {languageId: r}
+# options(repr.plot.width = 20, repr.plot.height = 12)
+start_date <- 2020
+end_date <- 2023
+
+# Create a Cleveland dot plot
+ggplot(
+    industry_summary |> filter(year >= start_date, year <= end_date),
+    aes(y = reorder(industry_cleaned, total_layoffs), x = total_layoffs)
+) +
+    geom_point() +
+    facet_wrap(~year, nrow = 1) +
+    labs(
+        y = "Industry",
+        x = "# of Workers Laid off",
+        title = "Study of Layoff trend across industries over the recent years 2018 - 2023"
+    ) +
+    theme_bw() +
+    scale_x_continuous(labels = scales::number_format(scale = 1))
+```
+
+**Inferences**: 
+
+- We can see that most of the layoffs in 2020 occured in the Restaurant and Hotels industry. This was very much expected because this industry was among the worst affected industries due to the COVID lockdowns.
+- Manufacturing industry was among the top 10 industries in year 2021-2023 but not in 2020. This indicates that the manufacturing industry was not instantly affected during the COVID lockdowns but did suffer later.
+- Professional, Scientific, and Technical Services was not among the top 10 most affected industries from 2020-2022, but in 2023 it was affected. This is evident from the recent job market.
