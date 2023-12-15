@@ -1,6 +1,6 @@
-# Results
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 library(dplyr)
 library(tibble)
@@ -15,29 +15,29 @@ library(plotly)
 library(reshape2)
 library(sf)
 library(jsonlite)
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 layoff_data <- read.csv("./data/Clean/layoff_cleaned_2.csv")
 layoff_data <- layoff_data |> rename(Date = `Received.Date`)
 unemployment_data <- read_excel("./data/Raw/Unemployment/UNRATE.xls", skip = 10)
 unemployment_data <- unemployment_data |> rename(Date = observation_date)
 # head(layoff_data, 5)
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 layoff_data$Date <- as.POSIXct(layoff_data$Date, format = "%Y-%m-%d")
 layoff_data$effective_date_cleaned <- as.POSIXct(layoff_data$effective_date_cleaned, format = "%Y-%m-%d")
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 head(layoff_data)
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 dji_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/DowJonesIndex.csv")
 snp_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/S&P500.csv")
@@ -46,9 +46,9 @@ nasdaq_stock_indices_data <- read.csv("./data/Raw/Stock_Indices/NASDAQ.csv")
 dji_stock_indices_data$Date <- as.POSIXct(dji_stock_indices_data$Date, format = "%m/%d/%y")
 snp_stock_indices_data$Date <- as.POSIXct(snp_stock_indices_data$Date, format = "%m/%d/%y")
 nasdaq_stock_indices_data$Date <- as.POSIXct(nasdaq_stock_indices_data$Date, format = "%Y-%m-%d")
-```
-
-```{r}
+#
+#
+#
 # Time series plot for layoff numbers
 
 layoff_data_2015 <- layoff_data %>%
@@ -79,10 +79,10 @@ plot_ly(layoff_data, x = ~Date, y = ~`Number.of.Workers`, type = "scatter", mode
         xaxis = list(title = "Data Laid Off"),
         yaxis = list(title = "Number.of.Workers")
     )
-```
-
-
-```{r}
+#
+#
+#
+#
 url <- "https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_state_20m.zip"
 temp <- tempfile(fileext = ".zip")
 download.file(url, temp, mode = "wb")
@@ -102,9 +102,9 @@ ggplot() +
     theme_minimal() +
     labs(title = "Choropleth Map of Number.of.Workers Laid off in Each State") +
     coord_sf(xlim = c(-125, -66))
-```
-
-```{r}
+#
+#
+#
 
 layoff_data_2015$Date <- as.Date(layoff_data_2015$Date, format = "%Y-%m-%d")
 layoff_data_2015$effective_date_cleaned <- as.Date(layoff_data_2015$effective_date_cleaned, format = "%Y-%m-%d")
@@ -122,10 +122,10 @@ ggplot(layoff_data_2015, aes(x = days_difference)) +
     ) +
     theme_minimal()
 
-```
-
-
-```{r}
+#
+#
+#
+#
 
 remove_outliers_z <- function(data, column, threshold = 0.5) {
     z_scores <- scale(data[[column]])
@@ -144,24 +144,24 @@ ggplot(data_no_outliers_z, aes(x = days_difference)) +
         y = "Frequency"
     ) +
     theme_minimal()
-```
-
-```{r}
+#
+#
+#
 # df_no_missing <- layoff_data[complete.cases(layoff_data$Date), ]
-```
-
-```{r}
+#
+#
+#
 # df_no_missing[is.na(df_no_missing$`Date`),]
-```
-
-
-```{r}
+#
+#
+#
+#
 
 # json_data <- toJSON(df_no_missing, pretty = TRUE)
 # writeLines(json_data, "data/Clean/layoff_json.json")
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 # Convert Date to the last date of the month
 layoff_data <- layoff_data %>%
@@ -174,17 +174,17 @@ layoff_data <- layoff_data %>%
 monthly_aggregated <- layoff_data %>%
     group_by(last_day_of_month) %>%
     summarize(num_of_workers_agg = sum(`Number.of.Workers`, na.rm = TRUE))
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 # filtered_layoff_data$`num_workers_scaled` <- filtered_layoff_data$`Number of Workers` / filtered_layoff_data$`Number of Workers`[1]*100
 # snp_stock_indices_data$close_scaled <- snp_stock_indices_data$Close / snp_stock_indices_data$Close[1] * 100
 # dji_stock_indices_data$close_scaled <- dji_stock_indices_data$Close / dji_stock_indices_data$Close[1] * 100
 # nasdaq_stock_indices_data$close_scaled <- nasdaq_stock_indices_data$Close / nasdaq_stock_indices_data$Close[1] * 100
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2007-01-01")
 end_date <- as.POSIXct("2019-12-31")
@@ -197,7 +197,7 @@ layoff_plot <- ggplot() +
     labs(
         y = "Layoffs per month",
         x = "",
-        title = "Study of Layoff and Market Performace between 2018-2023",
+        title = "Study of Layoff and Market Performace between 2007-2023",
         subtitle = "Layoff Trend",
     ) +
     theme_bw() +
@@ -226,9 +226,9 @@ stock_indices_plot <- ggplot() +
     scale_y_continuous(labels = scales::number_format(scale = 1))
 
 layoff_plot / stock_indices_plot
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2018-01-01")
 end_date <- as.POSIXct("2023-12-31")
@@ -271,9 +271,9 @@ stock_indices_plot <- ggplot() +
     scale_y_continuous(labels = scales::number_format(scale = 1))
 
 layoff_plot / stock_indices_plot
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2021-01-01")
 end_date <- as.POSIXct("2023-12-31")
@@ -316,9 +316,9 @@ stock_indices_plot <- ggplot() +
     scale_y_continuous(labels = scales::number_format(scale = 1))
 
 layoff_plot / stock_indices_plot
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2018-01-01")
 end_date <- as.POSIXct("2023-12-31")
@@ -348,9 +348,9 @@ pd <- ggplot(
     scale_y_continuous(labels = scales::number_format(scale = 1))
 # pk
 pk / pd
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 start_date <- as.POSIXct("2021-01-01")
 end_date <- as.POSIXct("2023-12-31")
@@ -380,9 +380,9 @@ pd <- ggplot(
     scale_y_continuous(labels = scales::number_format(scale = 1))
 # pk
 pk / pd
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 layoff_data$year <- as.numeric(format(layoff_data$Date, "%Y"))
 
@@ -390,9 +390,9 @@ layoff_reason_summary <- layoff_data |>
     drop_na(layoff_type_cleaned) |>
     group_by(year, layoff_type_cleaned) |>
     summarize(total_layoffs = sum(`Number.of.Workers`, na.rm = TRUE))
-```
-
-```{r}
+#
+#
+#
 #| vscode: {languageId: r}
 options(repr.plot.width = 20, repr.plot.height = 12)
 start_date <- 2018
@@ -412,5 +412,8 @@ ggplot(
     ) +
     theme_bw() +
     scale_x_continuous(labels = scales::number_format(scale = 1))
-```
-
+#
+#
+#
+#
+#
