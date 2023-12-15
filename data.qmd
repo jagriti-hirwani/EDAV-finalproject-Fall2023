@@ -335,7 +335,7 @@ We can see that we have no missing values.
 ### Stock Market Dataset (S&P500)
 
 ```{r}
-data <- read.csv("./data/Raw/Stock_Indices/HistoricalPrices.csv")
+data <- read.csv("./data/Raw/Stock_Indices/S&P500.csv")
 
 head(data, 5)
 ```
