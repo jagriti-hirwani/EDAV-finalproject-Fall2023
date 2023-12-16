@@ -11,3 +11,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script src="scripts/myscript.js"></script>
+
+In our interactive d3 chart, we display the top 10 reasons for layoff from the year 2000 - till date. We notice that from 2000 - 2005, there were majorly two reasons for layoffs - closure of the company or mass layoffs, however the pattern changes from 2006 onwards. In 2020, we see that layoffs were mostly temporary in nature as the businesses anticipated the market to bounce back after covid.
